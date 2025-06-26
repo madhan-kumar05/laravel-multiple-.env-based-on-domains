@@ -22,7 +22,7 @@ Run the following Artisan command to create a new middleware:
 
 ```bash
 php artisan make:middleware SubdomainEnvMiddleware
-
+```
 ```php
 namespace App\Http\Middleware;
 
@@ -66,3 +66,4 @@ class SubdomainEnvMiddleware
         return $subdomain;
     }
 }
+```
