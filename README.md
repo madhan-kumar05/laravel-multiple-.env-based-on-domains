@@ -23,6 +23,10 @@ Run the following Artisan command to create a new middleware:
 ```bash
 php artisan make:middleware SubdomainEnvMiddleware
 ```
+### 3. Modify the Middleware
+
+In the newly created middleware file located at app/Http/Middleware/SubdomainEnvMiddleware.php, modify the code to load the correct .env file based on the subdomain.
+
 ```php
 namespace App\Http\Middleware;
 
@@ -67,3 +71,33 @@ class SubdomainEnvMiddleware
     }
 }
 ```
+
+### 4. Register the Middleware
+
+You need to register this middleware in your ```bash app/Http/Kernel.php``` file.
+Add the ```bash SubdomainEnvMiddleware ``` to the ```php $middleware ``` array.
+
+```php
+protected $middleware = [
+    // Other middleware
+    \App\Http\Middleware\SubdomainEnvMiddleware::class,
+];
+```
+
+### 5. Testing the Setup
+
+When a request is made to a subdomain (e.g., ```bash subdomain1.example.com ```), the middleware will load the ```bash .env.subdomain1 ``` file.
+Similarly, for ```bash subdomain2.example.com ```, the ```bash .env.subdomain2 ``` file will be loaded.
+
+### 6. Clear Config Cache (Optional)
+
+After making changes to the ```bash .env ``` files, you may need to clear the config cache using the following command:
+
+```bash
+php artisan config:clear
+```
+
+### Additional Notes
+
+- Ensure that your DNS and web server (e.g., Apache, Nginx) are correctly configured to handle multiple subdomains and point them to the same Laravel application.
+- If you're using this approach in production, make sure that sensitive environment variables are securely managed.
