@@ -22,3 +22,47 @@ Run the following Artisan command to create a new middleware:
 
 ```bash
 php artisan make:middleware SubdomainEnvMiddleware
+
+```php
+namespace App\Http\Middleware;
+
+use Closure;
+use Illuminate\Support\Facades\Config;
+use Dotenv\Dotenv;
+
+class SubdomainEnvMiddleware
+{
+    /**
+     * Handle an incoming request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
+     * @return mixed
+     */
+    public function handle($request, Closure $next)
+    {
+        $subdomain = $this->getSubdomain($request);
+
+        // Load .env file based on subdomain
+        $envFile = base_path('.env.' . $subdomain);
+        if (file_exists($envFile)) {
+            $dotenv = Dotenv::createImmutable(base_path(), '.env.' . $subdomain);
+            $dotenv->load();
+        }
+
+        return $next($request);
+    }
+
+    /**
+     * Get the subdomain from the request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return string
+     */
+    private function getSubdomain($request)
+    {
+        $host = $request->getHost();
+        $subdomain = explode('.', $host)[0];  // Getting the first part of the domain
+        return $subdomain;
+    }
+}
